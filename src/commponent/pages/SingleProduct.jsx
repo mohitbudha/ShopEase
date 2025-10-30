@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import axios from "axios";
-import { FaStar } from "react-icons/fa6";
+import StarRating from "../Rating";
 import { useCart } from "../../context/CartContext";
 
 const SingleProduct = () => {
@@ -52,7 +52,7 @@ const SingleProduct = () => {
         <div className="flex justify-center md:justify-start gap-6 mb-4 flex-wrap">
           <p className="text-2xl text-blue-600 font-semibold">${product.price}</p>
           <p className="flex items-center gap-2 text-xl font-semibold text-yellow-600">
-            <FaStar className="text-yellow-500" /> {product.rating.rate}
+          <StarRating className="text-yellow-500"  rating={product.rating.rate} />
           </p>
         </div>
 
