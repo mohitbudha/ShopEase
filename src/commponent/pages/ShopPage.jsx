@@ -1,8 +1,9 @@
 import React, { useEffect, useState, useMemo, useContext } from "react";
 import axios from "axios";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useCart } from "../../context/CartContext";
-import { FaStar } from "react-icons/fa";
+import { useFavorites } from "../../context/FavoriteContext";
+import { FaStar, FaHeart, FaRegHeart } from "react-icons/fa";
 import { SearchContext } from "../../context/SearchContex";
 import StarRating from "../Rating";
 
@@ -12,6 +13,7 @@ const ShopPage = ({ category }) => {
   const [error, setError] = useState(null);
   const navigate = useNavigate();
   const { addToCart } = useCart();
+  const { favorites, toggleFavorite } = useFavorites();
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 12;
   const { search } = useContext(SearchContext);
@@ -63,34 +65,46 @@ const ShopPage = ({ category }) => {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 py-10">
       {/* Product Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6">
-        {currentProducts.map((product) => (
-          <div
-            key={product.id}
-            className="bg-white dark:bg-gray-800 rounded-xl shadow-md hover:shadow-xl transition flex flex-col p-4"
-          >
-            <img
-              src={product.image}
-              alt={product.title}
-              className="h-52 sm:h-56 w-full object-contain mb-3 cursor-pointer transition-transform duration-200 hover:scale-105"
-              onClick={() => navigate(`/product/${product.id}`)}
-            />
-            <h3 className="font-semibold text-gray-800 dark:text-white text-sm sm:text-base mb-1 truncate">
-              {product.title}
-            </h3>
-            <div className="flex justify-between items-center text-sm sm:text-base mb-3">
-              <p className="text-blue-600 font-bold">${product.price}</p>
-              <p className="flex items-center gap-1 text-yellow-500">
-                <StarRating className="text-lg"  rating={product.rating.rate}/>
-              </p>
-            </div>
-            <button
-              onClick={() => navigate(`/product/${product.id}`)}
-              className="mt-auto w-full py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition"
+        {currentProducts.map((product) => {
+          const isFav = favorites.some((p) => p.id === product.id); // 💖 check if in favorites
+          return (
+            <div
+              key={product.id}
+              className="bg-white dark:bg-gray-800 rounded-xl shadow-md hover:shadow-xl transition flex flex-col p-4 relative"
             >
-              Add to Cart
-            </button>
-          </div>
-        ))}
+              {/* 💖 Favorite Button */}
+              <button
+                onClick={() => toggleFavorite(product)}
+                className="absolute top-3 right-3 text-xl text-red-500"
+              >
+                {isFav ? <FaHeart /> : <FaRegHeart />}
+              </button>
+
+              <img
+                src={product.image}
+                alt={product.title}
+                className="h-52 sm:h-56 w-full object-contain mb-3 cursor-pointer transition-transform duration-200 hover:scale-105"
+                onClick={() => navigate(`/product/${product.id}`)}
+              />
+              <h3 className="font-semibold text-gray-800 dark:text-white text-sm sm:text-base mb-1 truncate">
+                {product.title}
+              </h3>
+              <div className="flex justify-between items-center text-sm sm:text-base mb-3">
+                <p className="text-blue-600 font-bold">${product.price}</p>
+                <p className="flex items-center gap-1 text-yellow-500">
+                  <StarRating rating={product.rating.rate} />
+                </p>
+              </div>
+              <button
+                onClick={() => {addToCart(product), navigate(`/product/${product.id}`)}}
+                className="mt-auto w-full py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition"
+                
+              >
+                Add to Cart
+              </button>
+            </div>
+          );
+        })}
       </div>
 
       {/* Empty State */}

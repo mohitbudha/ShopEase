@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import { FaShoppingCart, FaUser, FaBars, FaTimes } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
-import UserAuthForm from "../pages/AuthPage";
+import UserAuthForm from "../../userpages/AuthPage";
 import { SearchContext } from "../../context/SearchContex";
 
 const Navbar = ({ onCategoryChange }) => {
@@ -84,12 +84,12 @@ const Navbar = ({ onCategoryChange }) => {
             <FaShoppingCart size={22} />
           </Link>
 
-          <button
-            onClick={() => setOpen(!open)}
+          <Link to="/auth"
+        
             className="hover:text-blue-600 focus:outline-none"
           >
             <FaUser size={22} />
-          </button>
+          </Link>
 
           {/* Mobile Menu Button */}
           <button

@@ -1,8 +1,10 @@
 import { useCart } from "../../context/CartContext";
 import { Link, useNavigate } from "react-router-dom";
+import { useUser } from "../../context/UserContext";
 
 const CartPage = () => {
-  const { cart, removeFromcart } = useCart();
+  const { cart, removeFromCart } = useCart();
+  const {user}= useUser
   const navigate = useNavigate();
 
   const totalPrice = cart.reduce(
@@ -10,6 +12,13 @@ const CartPage = () => {
     0
   );
   const totalitem = cart.reduce((sum, item) => sum + item.quantity, 0);
+    const handleCheckout = () => {
+    if (user.isLoggedIn) {
+      navigate("/checkout");
+    } else {
+      navigate("/auth");
+    }
+  };
 
   return (
     <div className="p-4 sm:p-6 flex flex-col items-center">
@@ -82,14 +91,14 @@ const CartPage = () => {
                     </td>
                     <td className="px-4 py-3 space-x-2">
                       <button
-                        onClick={() => removeFromcart(item.id)}
+                        onClick={() => removeFromCart(item.id)}
                         className="bg-red-600 text-white px-3 py-1 rounded-md hover:bg-red-700"
                       >
                         Remove
                       </button>
                       <button
                         onClick={() =>
-                          alert(`${item.title} is pending checkout!`)
+                          handleCheckout()
                         }
                         className="bg-green-600 text-white px-3 py-1 rounded-md hover:bg-green-700"
                       >
@@ -136,8 +145,7 @@ const CartPage = () => {
                     Remove
                   </button>
                   <button
-                    onClick={() =>
-                      alert(`${item.title} is pending checkout!`)
+                    onClick={() => navigate(`/checkout`)
                     }
                     className="bg-green-600 text-white px-4 py-1 rounded-md hover:bg-green-700"
                   >
